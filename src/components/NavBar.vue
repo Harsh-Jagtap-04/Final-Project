@@ -32,7 +32,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scooped>
 #login-admin-link {
   text-decoration: none; /* Remove the underline */
   /* Add any other styling you want for this link */
@@ -46,7 +46,7 @@ export default {
   font-family: "Poppins", sans-serif;
 }
 .content {
-  z-index: 2;
+  z-index: 0;
 }
 :root {
   --white-color: #fff;

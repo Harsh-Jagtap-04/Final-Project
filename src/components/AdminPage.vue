@@ -6,7 +6,7 @@
       <MainContent :active-tab="activeTab" @update:activeTab="updateActiveTab" />
       </div>
     </div>
-  </template>
+</template>
   
   <script>
   import SideBar from "@/components/SideBar.vue";

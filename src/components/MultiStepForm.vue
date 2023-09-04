@@ -134,6 +134,8 @@
             <div class="form-group">
               <label class="form-label" for="extract-7-12" >Online Transcript of 7/12 / ७/१२ चा ऑनलाईन उतारा</label>
               <input type="file" id="blobExtract712" accept=".pdf, .jpg, .jpeg, .png" class="form-control" @change="handleFileChange('blobExtract712', $event)" />
+              <!-- Add a button to view the uploaded document -->
+    <button v-if="formData.blobExtract712" class="btn btn-link" @click="viewDocument('blobExtract712')">View Document</button>
             </div>
             <div class="form-group">
               <label class="form-label" for="form-8a">Online Transcript of Form 8A</label>
@@ -236,6 +238,20 @@ export default {
     };
   },
   methods: {
+    viewDocument(fieldName) {
+      // Get the base64-encoded document data from the formData
+      const documentData = this.formData[fieldName];
+
+      // Create a new window or tab to display the document
+      const viewerWindow = window.open('', '_blank');
+      viewerWindow.document.open();
+
+      // Depending on the document type (e.g., PDF, image), you may need to set the appropriate content type
+      // For example, for PDF:
+      viewerWindow.document.write(`<embed width="100%" height="100%" src="data:application/pdf;base64,${documentData}" type="application/pdf" />`);
+
+      viewerWindow.document.close();
+    },
     navigateToStep(stepNumber) {
       this.currentStep = stepNumber;
     },
@@ -324,6 +340,7 @@ axios.post('http://127.0.0.1:5555/saveVihirDocuments', documentData, {
 .then((response) => {
   console.log('Documents saved:', response.data);
   // Continue with other parts of the form submission if needed
+  this.submitThirdPart();
 })
 .catch((error) => {
   console.error('Error saving documents:', error);

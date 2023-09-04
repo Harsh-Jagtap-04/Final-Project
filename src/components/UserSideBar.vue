@@ -1,7 +1,7 @@
 <template>
-  <div class="sidebar">
-    <h2 class="sidebar-title">Instructions</h2>
-    <p class="sidebar-text">Follow these steps to apply for the scheme:</p>
+  <div class="sidebar1">
+    <h2 class="sidebar1-title">Instructions</h2>
+    <p class="sidebar1-text">Follow these steps to apply for the scheme:</p>
     <ul class="instruction-list">
       <li class="instruction-item">
         <span class="step-number">1</span> Enter your Email.
@@ -20,7 +20,7 @@
 </template>
 
 <style scoped>
-.sidebar {
+.sidebar1 {
   background-color:  #fff;
   padding: 20px;
   border-radius: 5px;
@@ -31,13 +31,13 @@
   margin-right: 20px;
 }
 
-.sidebar-title {
+.sidebar1-title {
   font-size: 24px;
   margin-bottom: 10px;
   color: #333;
 }
 
-.sidebar-text {
+.sidebar1-text {
   font-size: 16px;
   margin-bottom: 15px;
   color: #555;
@@ -75,8 +75,8 @@
   background-color: #45a049;
 }
 
-/* Add a subtle border to the sidebar for separation */
-.sidebar::before {
+/* Add a subtle border to the sidebar1 for separation */
+.sidebar1::before {
   content: '';
   display: block;
   width: 4px;
