@@ -1,216 +1,274 @@
 <template>
-  <div>
-    <h1 class="text-center">Submitted Application Forms</h1>
-    
-    <!-- Search Bar -->
-    <input
-  v-if="showInputField"
-  v-model="searchQuery"
-  :placeholder="selectedFilter === 'category' ? 'Enter Category' : 'Search by Name'"
-  :type="selectedFilter === 'date' ? 'date' : 'text'"
-  class="form-control mt-3"
-/>
-    
-    <!-- Filter Options -->
-    <div class="filter-options mt-3">
-      <label>Filter By:</label>
-      <select v-model="selectedFilter">
-        <option value="name">Name</option>
-        <option value="date">Date Range</option>
-        <option value="panchayatSamiti">Panchayat Samiti Authorization</option>
-        <option value="gramPanchayat">Gram Panchayat Authorization</option>
-        <option value="jilhaParishad">ZP Authorization</option>
-        <option value="category">Category</option>
-      </select>
+  <div class="application">
+    <div class="application-options">
+      <!-- Add buttons to switch between sections -->
+      <button class="btn btn-info mb-4 text-white" @click="selectSection('GramPanchayat')">Gram Panchayat</button>
+      <button class="btn btn-info mb-4 text-white" @click="selectSection('PanchayatSamiti')">Panchayat Samiti</button>
+      <button class="btn btn-info mb-4 text-white" @click="selectSection('ZillaParishad')">Zilla Parishad</button>
 
-      <!-- Date Range Inputs (Show only if "Date Range" filter is selected) -->
-      <div v-if="selectedFilter === 'date'" class="date-range">
-        <label>Start Date:</label>
-        <input type="date" v-model="startDate" />
-        <label>End Date:</label>
-        <input type="date" v-model="endDate" />
+      <!-- Display the selected table based on the section -->
+      <div v-if="selectedSection === 'GramPanchayat'">
+        <table class="table table-striped">
+          <!-- Table headers for Gram Panchayat -->
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Date of Creation</th>
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th>Form Number</th>
+              <th>Gram Panchayat Authority</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(application, index) in gramPanchayatApplications" :key="application.id">
+              <!-- Display Gram Panchayat applications -->
+              <td>{{ ++index }}</td>
+              <td>{{ application.dtDateOfCreation }}</td>
+              <td>{{ application.ncharFirstName }}</td>
+              <td>{{ application.ncharLastName }}</td>
+              <td>{{ application.ncharFormNumber }}</td>
+              <td>
+                <!-- Check if dtGramPanchayatAuthDate is present and ynGramPanchayatAuthorized is true -->
+                <template v-if="application.dtGramPanchayatAuthDate && application.ynGramPanchayatAuthorized">
+                  <!-- Show the result from ynGramPanchayatAuthorized -->
+                  {{ application.ynGramPanchayatAuthorized }}
+                </template>
+                <!-- If dtGramPanchayatAuthDate is not present or ynGramPanchayatAuthorized is false, show buttons -->
+                <template v-else>
+                  <button class="btn btn-sm rounded btn-success me-2" @click="authorizeApplication(application.id, 'GramPanchayat')" v-if="!application.dtGramPanchayatAuthDate">
+                    Authorize
+                  </button>
+                  <button class="btn btn-sm rounded btn-danger" @click="rejectApplication(application.id, 'GramPanchayat')" v-if="!application.dtGramPanchayatAuthDate">
+                    Reject
+                  </button>
+                </template>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div v-if="selectedSection === 'PanchayatSamiti'">
+  <table class="table table-striped">
+    <!-- Table headers for Panchayat Samiti -->
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Date of Creation</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Form Number</th>
+        <th>Panchayat Samiti Authority</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="(application, index) in panchayatSamitiApplications" :key="application.id">
+        <!-- Display Panchayat Samiti applications -->
+        <td>{{ ++index }}</td>
+        <td>{{ application.dtDateOfCreation }}</td>
+        <td>{{ application.ncharFirstName }}</td>
+        <td>{{ application.ncharLastName }}</td>
+        <td>{{ application.ncharFormNumber }}</td>
+        <td>
+          <!-- Check if dtPanchayatSamitiAuthDate is present and ynPanchayatSamitiAuthorized is true -->
+          <template v-if="application.dtPanchayatSamitiAuthDate && application.ynPanchayatSamitiAuthorized">
+            <!-- Show the result from ynPanchayatSamitiAuthorized -->
+            {{ application.ynPanchayatSamitiAuthorized }}
+          </template>
+          <!-- If dtPanchayatSamitiAuthDate is not present or ynPanchayatSamitiAuthorized is false, show buttons -->
+          <template v-else>
+            <!-- Show buttons for Panchayat Samiti authorization -->
+            <button class="btn btn-sm rounded btn-success me-2" @click="authorizeApplication(application.id, 'PanchayatSamiti')" v-if="!application.dtPanchayatSamitiAuthDate">
+              Authorize
+            </button>
+            <button class="btn btn-sm rounded btn-danger" @click="rejectApplication(application.id, 'PanchayatSamiti')" v-if="!application.dtPanchayatSamitiAuthDate">
+              Reject
+            </button>
+          </template>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+      <div v-if="selectedSection === 'ZillaParishad'">
+        <table class="table table-striped">
+          <!-- Table headers for Zilla Parishad -->
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Date of Creation</th>
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th>Form Number</th>
+              <th>Zilla Parishad Authority</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(application, index) in zillaParishadApplications" :key="application.id">
+              <!-- Display Zilla Parishad applications -->
+              <td>{{ ++index }}</td>
+              <td>{{ application.dtDateOfCreation }}</td>
+              <td>{{ application.ncharFirstName }}</td>
+              <td>{{ application.ncharLastName }}</td>
+              <td>{{ application.ncharFormNumber }}</td>
+              <td>
+                <!-- Check if dtZillaParishadAuthDate is present and ynZillaParishadAuthorized is true -->
+                <template v-if="application.dtZillaParishadAuthDate && application.ynZillaParishadAuthorized">
+                  <!-- Show the result from ynZillaParishadAuthorized -->
+                  {{ application.ynZillaParishadAuthorized }}
+                </template>
+                <!-- If dtZillaParishadAuthDate is not present or ynZillaParishadAuthorized is false, show buttons -->
+                <template v-else>
+                  <button class="btn btn-sm rounded btn-success me-2" @click="authorizeApplication(application.id, 'ZillaParishad')" v-if="!application.dtZillaParishadAuthDate">
+                    Authorize
+                  </button>
+                  <button class="btn btn-sm rounded btn-danger" @click="rejectApplication(application.id, 'ZillaParishad')" v-if="!application.dtZillaParishadAuthDate">
+                    Reject
+                  </button>
+                </template>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
-    
-    
-    <!-- Table -->
-    <table class="table mt-3">
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>Name</th>
-          <th>Category</th>
-          <th>Gram Panchayat Authorized</th>
-          <th>Panchayat Samiti Authorized</th>
-          <th>Jilha Parishad Authorized</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(application, index) in filteredApplications" :key="index">
-          <td>{{ application.date }}</td>
-          <td>
-            {{ application.firstName }} {{ application.middleName }} {{ application.lastName }}
-          </td>
-          <td>{{ application.category }}</td>
-          <td>{{ application.gramPanchayatAuthorized }}</td>
-          <td>
-            {{ application.panchayatSamitiAuthorized }}
-            <span v-if="application.panchayatSamitiAuthorized === 'No'" class="remark">Remark: No authorization</span>
-          </td>
-          <td>
-            {{ application.jilhaParishadAuthorized }}
-            <span v-if="application.jilhaParishadAuthorized === 'No'" class="remark">Remark: No authorization</span>
-          </td>
-          <td>
-            <button class="btn btn-primary" @click="editApplication(application)">Edit</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
   </div>
 </template>
 
 <script>
+//import MultiStepForm from "@/components/MultiStepForm.vue";
+import axios from 'axios';
+
 export default {
+  name: 'ApplicationPage',
+  components: {
+   // MultiStepForm,
+    // ... (other components)
+  },
   data() {
     return {
-      searchQuery: '',
-      selectedFilter: 'name', // Default filter option
-      startDate: '',
-      endDate: '',
-      applications: [
-        // Dummy data (Replace with actual data)
-        {
-          firstName: 'John',
-          middleName: 'Doe',
-          lastName: 'Smith',
-          category: 'abc',
-          date: '2023-08-19',
-          gramPanchayatAuthorized: 'Yes',
-          panchayatSamitiAuthorized: 'No',
-          jilhaParishadAuthorized: 'No',
-          // ... other fields ...
-        },
-        // Add more application objects here
-      ],
+      selectedSection: 'GramPanchayat', // Initialize with Gram Panchayat as the default section
+      applications: [], // Initialize an empty array to store applications
     };
   },
   computed: {
-    showInputField() {
-    return this.selectedFilter !== 'date';
-  },
-  filteredApplications() {
-    return this.applications.filter(application => {
-      const matchesSearchQuery = this.matchesSearchQuery(application);
-
-      if (this.selectedFilter === 'name') {
-        return matchesSearchQuery;
-      } else if (this.selectedFilter === 'date') {
-        // Apply date range filter
-        return (
-          matchesSearchQuery &&
-          (!this.startDate || application.date >= this.startDate) &&
-          (!this.endDate || application.date <= this.endDate)
-        );
-      } else if (this.selectedFilter === 'panchayatSamiti') {
-        return matchesSearchQuery && application.panchayatSamitiAuthorized === 'Yes';
-      } else if (this.selectedFilter === 'gramPanchayat') {
-        return matchesSearchQuery && application.gramPanchayatAuthorized === 'Yes';
-      } else if (this.selectedFilter === 'jilhaParishad') {
-        return matchesSearchQuery && application.jilhaParishadAuthorized === 'Yes';
-      } else if (this.selectedFilter === 'category') {
-        // Filter by category
-        console.log('Category:', application.category.toLowerCase());
-        console.log('Search Query:', this.searchQuery.toLowerCase());
-        
-        return (
-          matchesSearchQuery &&
-          (application.category.toLowerCase() === this.searchQuery.toLowerCase())
-        );
-      }
-    });
-  },
+    // Create computed properties for each table based on the selected section
+    gramPanchayatApplications() {
+      return this.applications.filter(application => !application.dtGramPanchayatAuthDate);
+    },
+    panchayatSamitiApplications() {
+  return this.applications.filter(application => application.dtGramPanchayatAuthDate && !application.dtPanchayatSamitiAuthDate);
 },
-  methods: {
-    matchesSearchQuery(application) {
-      const fullName = `${application.firstName} ${application.middleName} ${application.lastName}`;
-      return fullName.toLowerCase().includes(this.searchQuery.toLowerCase());
+    zillaParishadApplications() {
+      return this.applications.filter(application => application.dtPanchayatSamitiAuthDate);
     },
-    editApplication(application) {
-      console.log('Editing:', application);
-      this.$emit('update:activeTab', 'edit_form');
-    },
+    selectedOptionComponent() {
+      return this.selectedOption === 'new' ? 'MultiStepForm' : null;
+    }
   },
+  methods: {
+    selectSection(section) {
+      this.selectedSection = section;
+    },
+    authorizeApplication(applicationId, authority) {
+    const jsonData = {
+      id: applicationId,
+    };
+
+    axios
+      .post(`http://127.0.0.1:5555/authorize${authority}`, jsonData, {
+        headers: { 'Content-Type': 'application/json' },
+      })
+      .then((response) => {
+        // Handle successful authorization
+        // Update your frontend accordingly
+        const authorizationDate = response.data.dtGramPanchayatAuthDate;
+        console.log(authorizationDate)
+        this.fetchApplications();
+      })
+      .catch((error) => {
+        // Handle error
+        console.error('Error authorizing application:', error);
+      });
+  },
+  rejectApplication(applicationId, authority) {
+    const jsonData = {
+      id: applicationId,
+    };
+
+    axios
+      .post(`http://127.0.0.1:5555/reject${authority}`, jsonData, {
+        headers: { 'Content-Type': 'application/json' },
+      })
+      .then((response) => {
+        // Handle successful rejection
+        // Update your frontend accordingly
+        const authorizationDate = response.data.dtGramPanchayatAuthDate;
+        console.log(authorizationDate)
+        this.fetchApplications();
+      })
+      .catch((error) => {
+        // Handle error
+        console.error('Error rejecting application:', error);
+      });
+  },
+    selectOption(option) {
+      this.selectedOption = option;
+    },
+    reloadApplicationData() {
+      this.fetchApplications();
+    },
+    deleteApplication(applicationId) {
+      const jsonData = { id: applicationId };
+
+      axios.post('http://127.0.0.1:5555/deleteVihirInfo', jsonData, { headers: { 'Content-Type': 'application/json' } })
+        .then(response => {
+          // Handle successful deletion
+          const deletedApplicationId = response.data.id;
+          console.log(`Application with ID ${deletedApplicationId} has been deleted.`);
+
+          // Remove the deleted application from the frontend
+          this.applications = this.applications.filter(application => application.id !== applicationId);
+          this.reloadApplicationData();
+        })
+        .catch(error => {
+          // Handle error
+          console.error('Error deleting application:', error);
+        });
+    },
+    fetchApplications() {
+      axios.get('http://127.0.0.1:5555/GetVihirInfo')
+        .then(applications => this.applications = applications.data)
+        .catch(error => console.error('Error:', error));
+    },
+    editApplication(applicationId) {
+      this.selectedOption = 'new'; // Set the selectedOption to 'new'
+      this.selectedApplicationId = applicationId; // Store the selected application ID
+    },
+    goBackFromChild() {
+      this.selectedOption = null;
+      this.reloadApplicationData();
+    }
+  },
+  mounted() {
+    this.fetchApplications(); // Fetch applications when the component is mounted
+  }
 };
 </script>
 
 <style scoped>
-/* Table Styles */
-.table {
-  width: 100%;
-  border-collapse: collapse;
-  border-spacing: 0;
+.application {
+  padding: 40px;
+  background-color: #ffffff;
+  box-shadow: 0 0 2px var(--grey-color-light);
 }
 
-.table th,
-.table td {
-  padding: 0.75rem;
-  border: 1px solid #dee2e6;
-}
-
-.table th {
-  background-color: #f8f9fa;
-  font-weight: bold;
-  text-align: left;
-}
-
-/* Search Bar Styles */
-.form-control {
-  width: 100%;
-  padding: 0.375rem 0.75rem;
-  font-size: 1rem;
-  line-height: 1.5;
-  color: #495057;
-  border: 1px solid #ced4da;
-  border-radius: 0.25rem;
-  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-}
-
-/* Button Styles */
-.btn {
-  display: inline-block;
-  font-weight: 400;
-  color: #212529;
-  text-align: center;
-  vertical-align: middle;
-  cursor: pointer;
-  user-select: none;
-  border: 1px solid transparent;
-  padding: 0.375rem 0.75rem;
-  font-size: 1rem;
-  line-height: 1.5;
-  border-radius: 0.25rem;
-  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
-    border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-}
-
-.btn-primary {
-  color: #fff;
-  background-color: #007bff;
-  border-color: #007bff;
-}
-
-.btn-primary:hover {
-  color: #fff;
-  background-color: #0056b3;
-  border-color: #0056b3;
-}
-/* Remark Styles */
-.remark {
-  color: red;
-  font-size: 0.75rem;
-  display: block;
-  margin-top: 0.25rem;
+.application-options {
+  /* Add your custom styles for the application options container */
 }
 </style>
