@@ -12,6 +12,7 @@
 
 <script>
 import axios from 'axios';
+import Swal from 'sweetalert2'
 
 export default {
   data() {
@@ -34,29 +35,50 @@ export default {
             email: this.email,
           });
 
-          if (checkEmailResponse.status === 200 && checkEmailResponse.data.isRegistered) {
+          if (checkEmailResponse.status === 200 && checkEmailResponse.data.isRegistered !== false) {
             // The email is registered, proceed to generate OTP
+
+            console.log(checkEmailResponse.data)
+
             const otpResponse = await axios.post('http://127.0.0.1:5555/generateOtp', {
               email: this.email,
             });
-
             if (otpResponse.status === 200) {
               console.log('OTP Sent Successfully');
-              alert('OTP Sent Successfully');
+              Swal.fire({
+            title: 'Success!',
+            text: 'OTP Sent Successfully',
+            icon: 'success',
+            confirmButtonText: 'OK'
+          })             
 
-              this.$router.push('/admin');
-              
             } else {
               console.error('OTP request failed:', otpResponse.data.error);
-              alert('OTP request failed. Please try again.');
+              Swal.fire({
+            title: 'Error!',
+            text: 'User Not found',
+            icon: 'error',
+            confirmButtonText: 'OK'
+          })
             }
           } else {
             console.error('Email is not registered');
-            alert('Email is not registered. Please register an account.');
+            Swal.fire({
+            title: 'Error!',
+            text: 'Email is not registered',
+            icon: 'error',
+            confirmButtonText: 'OK'
+          })
           }
         } catch (error) {
           console.error('Error:', error);
-          alert('An error occurred while checking email or requesting OTP. Please try again later.');
+          
+          Swal.fire({
+            title: 'Error!',
+            text: 'An error occurred while checking email or requesting OTP. Please try again later.',
+            icon: 'error',
+            confirmButtonText: 'OK'
+          })
         }
       } else {
         alert('Please enter an email address.');
@@ -75,6 +97,7 @@ export default {
             console.log('OTP Verified Successfully');
             alert('OTP Verified Successfully');
             // You can now consider the user as log
+            this.$router.push('/admin');
 
           } else {
             //console.error('OTP verification failed:', response.data.error);
