@@ -194,16 +194,21 @@
 
 
       </form>
+      <ReportForm :formData="formData" />
     </div>
   </div>
 </template>
 
 <script>
 import axios from 'axios';
+import ReportForm from './ReportForm.vue';
 
 export default {
   props: {
     selectedScheme: Object, // Pass the selected scheme as a prop
+  },
+  components: {
+    ReportForm, // Register the child component
   },
   data() {
     return {
@@ -366,6 +371,7 @@ axios.post('http://127.0.0.1:5555/saveVihirDocuments', documentData, {
       .then(response => {
         console.log('Third part saved:', response.data);
         // Reset form fields and show success message
+
         this.resetForm();
         alert('Application submitted successfully');
       })

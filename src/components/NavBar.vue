@@ -46,7 +46,7 @@ export default {
   font-family: "Poppins", sans-serif;
 }
 .content {
-  z-index: 0;
+  z-index: 2;
 }
 :root {
   --white-color: #fff;

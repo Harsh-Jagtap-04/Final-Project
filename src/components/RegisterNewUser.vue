@@ -77,10 +77,20 @@ export default {
   data() {
     return {
       currentStep: 1,
+      /*
       authorities: [
-        { id: 1, name: 'GP' },
+        { id: 1, name: 'GS' },
         { id: 1, name: 'PS' },
         { id: 2, name: 'ZP' },
+        // ... Repeat for other authorities
+      ],
+      */
+     authorities: [
+        { id: 1, name: 'Grampanchayat Operator Authoraties' },
+        { id: 2, name: 'Grampanchayat Authorisation Authorities' },
+        { id: 3, name: 'Panchayat Samiti Operator Authoraties' },
+        { id: 4, name: 'Panchayat Samiti Authorisation Authorities' },
+        { id: 5, name: 'Zillha Parishad Authorities' },
         // ... Repeat for other authorities
       ],
       formData  :
