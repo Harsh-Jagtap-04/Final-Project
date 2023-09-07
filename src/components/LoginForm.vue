@@ -24,7 +24,7 @@
 
 <script>
 import axios from 'axios';
-import $ from 'jquery';
+// import $ from 'jquery';
 
 
 
@@ -55,7 +55,7 @@ export default {
       // Send a request to check if the email is registered
       const checkEmailResponse = await axios.post('http://127.0.0.1:5555/checkEmail', {
         email: this.loginData.email,
-      });
+      }).then(data => console.log(data));
 
       if (checkEmailResponse.status === 200 && checkEmailResponse.data.isRegistered) {
         // The email is registered, proceed to generate OTP
