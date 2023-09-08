@@ -43,7 +43,7 @@ export default {
 
 .content {
   /* Set a higher z-index value */
-  z-index: 2;
+  z-index: 99;
 }
 :root {
   --white-color: #fff;
