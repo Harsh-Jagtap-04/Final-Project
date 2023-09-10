@@ -35,10 +35,9 @@ export default {
             email: this.email,
           });
 
-          if (checkEmailResponse.status === 200 && checkEmailResponse.data.isRegistered !== false) {
-            // The email is registered, proceed to generate OTP
-
-            console.log(checkEmailResponse.data)
+          if (checkEmailResponse.status === 200 && checkEmailResponse.data.isRegistered !== false)
+          {
+              localStorage.setItem('login',JSON.stringify(checkEmailResponse.data.admin_data));
 
             const otpResponse = await axios.post('http://127.0.0.1:5555/generateOtp', {
               email: this.email,

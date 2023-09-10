@@ -67,29 +67,29 @@
           <!-- Right side: Authority Checkboxes -->
           <div class="form-group">
             <h2 class="h5 mb-3"><i class="fa-solid fa-street-view me-2"></i>Authority Names</h2>
-            <div class="form-check">
-              <input type="checkbox" id="grampanchayat-authorities" class="form-check-input"
-                v-model="formData.bGrampanchayatAuthorisationAuthorities" />
-              <label for="grampanchayat-authorities" class="form-check-label">Grampanchayat Authorities</label>
-            </div>
-            <div class="form-check">
+            <div class="form-check" v-if="gpo">
               <input type="checkbox" id="grampanchayat-operator-authorities" class="form-check-input"
                 v-model="formData.bGrampanchayatOperatorAuthoraties" />
               <label for="grampanchayat-operator-authorities" class="form-check-label">Grampanchayat Operator
                 Authorities</label>
             </div>
-            <div class="form-check">
-              <input type="checkbox" id="panchayatsamiti-authorities" class="form-check-input"
-                v-model="formData.bPanchayatSamitiAuthorisationAuthorities" />
-              <label for="panchayatsamiti-authorities" class="form-check-label">Panchayat Samiti Authorities</label>
+            <div class="form-check" v-if="gp">
+              <input type="checkbox" id="grampanchayat-authorities" class="form-check-input"
+                v-model="formData.bGrampanchayatAuthorisationAuthorities" />
+              <label for="grampanchayat-authorities" class="form-check-label">Grampanchayat Authorities</label>
             </div>
-            <div class="form-check">
+            <div class="form-check" v-if="pso">
               <input type="checkbox" id="panchayatsamiti-operator-authorities" class="form-check-input"
                 v-model="formData.bPanchayatSamitiOperatorAuthoraties" />
               <label for="panchayatsamiti-operator-authorities" class="form-check-label">Panchayat Samiti Operator
                 Authorities</label>
             </div>
-            <div class="form-check">
+            <div class="form-check" v-if="ps">
+              <input type="checkbox" id="panchayatsamiti-authorities" class="form-check-input"
+                v-model="formData.bPanchayatSamitiAuthorisationAuthorities" />
+              <label for="panchayatsamiti-authorities" class="form-check-label">Panchayat Samiti Authorities</label>
+            </div>
+            <div class="form-check" v-if="zp">
               <input type="checkbox" id="zillhaparishad-authorities" class="form-check-input"
                 v-model="formData.bZillhaParishadAuthorities" />
               <label for="zillhaparishad-authorities" class="form-check-label">Zillha Parishad Authorities</label>
@@ -139,6 +139,12 @@ export default {
         "ncharUsername": "",
         "ynDeleted": false
       },
+      gpo : false,
+      gp  : false,
+      pso : false,
+      ps  : false,
+      zp  : false,
+      user: (localStorage.getItem('login')) ? JSON.parse(localStorage.getItem('login')) : alert('User not logged in.'),
       saveURL: 'http://127.0.0.1:5555/saveAdmin'
     };
   },
@@ -230,8 +236,21 @@ export default {
         }));
     }
   },
-  mounted() {
+  mounted()
+  {
     if (localStorage.getItem('edituser')) this.fetchEditUser(localStorage.getItem('edituser'));
+    
+    if(this.user['bGramPanchayatAuthority'] !== undefined && this.user.bGramPanchayatAuthority === true)
+      this.gpo = true;
+    else if(this.user['bPanchayatSamitiAuthority'] !== undefined && this.user.bPanchayatSamitiAuthority === true || this.user['panchaytsamitioprator'] !== undefined && this.user.panchaytsamitioprator === true)
+      this.gp = true;
+    else if(this.user['bZillaParishadAuthority'] !== undefined && this.user.bZillaParishadAuthority === true)
+    {
+      this.ps = true;
+      this.pso = true;
+      this.zp = true;
+    }
+    
   }
 };
 </script>
